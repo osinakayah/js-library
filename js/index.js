@@ -87,6 +87,25 @@ OdinLibrary = (function () {
             alert('Invalid Paramter as book read status')
             return localBookList;
         }
+        Book: function (author, title, numberOfPages, readStatus) {
+            this._author = author;
+            this._title = title;
+            this._numberOfPages = numberOfPages;
+            this._readStatus = readStatus;
+
+            this.toogleBookReadStatus = function () {
+                this._readStatus = parseInt(this._readStatus) + 1;
+                if (this._readStatus > 3) {
+                    this._readStatus = 1
+                }
+            }
+        },
+        removeBookFromLibrary: (bookList, bookIndex) => {
+            const localBookList = [...bookList];
+            localBookList.splice(bookIndex, 1);
+            render(localBookList);
+            return localBookList;
+        },        
     }
 
 
