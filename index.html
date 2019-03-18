@@ -6,6 +6,78 @@
     <title>JS Library</title>
   </head>
   <body>
+    <div class="container">
+        <div class="row">
+            <div class="offset-10 col-2">
+                <button data-toggle="modal" data-target="#addBookModal" id="btn-add-new-book" class="btn btn-primary btn-block">Add Book</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <caption>List of Books</caption>
+                        <thead class="thead-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Author</th>
+                            <th>Title</th>
+                            <th>Number Of Pages</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="book-list-body">
 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add Book</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="inputBookAuthor">Author</label>
+                                <input type="text" class="form-control" id="inputBookAuthor" aria-describedby="bookAuthorHelp" placeholder="Enter Author Name">
+
+                            </div>
+                            <div class="form-group">
+                                <label for="inputBookTitle">Title</label>
+                                <input type="text" class="form-control" id="inputBookTitle" placeholder="Enter Title">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputBookNumberOfPages">Number of Pages</label>
+                                <input type="number" class="form-control" id="inputBookNumberOfPages" placeholder="Enter Number of Pages">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputBookReadStatus">Book Read Status</label>
+                                <select class="form-control" id="inputBookReadStatus">
+                                    <option value="1">Unread</option>
+                                    <option value="2">Read</option>
+                                    <option value="3">Reading</option>
+                                </select>
+                            </div>
+
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button id="buttonSaveBook" type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
   </body>
 </html>
