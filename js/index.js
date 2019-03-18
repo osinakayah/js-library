@@ -39,7 +39,7 @@ OdinLibrary = (function () {
                 return 'table-danger'
         }
     }
-    
+
     const render = (bookList) => {
       writeToLocalStorage(bookList)
       const tableBody = bookList.reduce(function (htmlBookRows, currentBook, currentBookIndex) {
@@ -68,7 +68,25 @@ OdinLibrary = (function () {
             }
             return []
         },
-        BOOK_STATUS: BOOK_STATUS
+        BOOK_STATUS: BOOK_STATUS,
+        addBookToLibrary:  (author, title, numberOfPages, readStatus, localBookList) => {
+            let isBookStausValid = false
+            for (let enumReadStatusKey in BOOK_STATUS) {
+
+                if (readStatus === BOOK_STATUS[enumReadStatusKey]) {
+                    isBookStausValid = true;
+                    break;
+                }
+            }
+            if (isBookStausValid) {
+                const book = new OdinLibrary.Book(author, title, numberOfPages, readStatus);
+                const newBookList = localBookList.concat(book);
+                render(newBookList);
+                return newBookList
+            }
+            alert('Invalid Paramter as book read status')
+            return localBookList;
+        }
     }
 
 
