@@ -28,7 +28,7 @@ OdinLibrary = (function () {
             return 'j'
       }
     }
-    
+
     const getBookRowContext = function (bookReadStatus) {
         switch (bookReadStatus.toString()) {
             case BOOK_STATUS.READ:
@@ -38,6 +38,18 @@ OdinLibrary = (function () {
             case BOOK_STATUS.UNREAD:
                 return 'table-danger'
         }
+    }
+
+    return {
+        loadCachedBooks: () => {
+            const bookList = readFromLocalStorage();
+            if (bookList) {
+                render(bookList);
+                return bookList;
+            }
+            return []
+        },
+        BOOK_STATUS: BOOK_STATUS
     }
 
 })()
