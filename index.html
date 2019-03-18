@@ -84,13 +84,20 @@
     <script src="js/index.js"></script>
     <script>
         $(document).ready(function () {
-            let bookList = OdinLibrary.loadCachedBooks();
-            $('body').on('click', '.deleteBook', function (e) {
-                e.stopImmediatePropagation();
-                const bookIndex = $(this).attr('data-book-index');
-                bookList = OdinLibrary.removeBookFromLibrary(bookList, bookIndex)
-            });
-
+          let bookList = OdinLibrary.loadCachedBooks();
+          $('body').on('click', '.deleteBook', function (e) {
+              e.stopImmediatePropagation();
+              const bookIndex = $(this).attr('data-book-index');
+              bookList = OdinLibrary.removeBookFromLibrary(bookList, bookIndex)
+          });
+          $('body').on('click', '.bookReadStatus', function (e) {
+              e.stopImmediatePropagation();
+              const bookIndex = $(this).attr('data-book-index');
+              const book = bookList[bookIndex];
+              book.toogleBookReadStatus();
+              bookList.splice(bookIndex, 1, book);
+              OdinLibrary.render(bookList);
+          });
         });
     </script>
   </body>
