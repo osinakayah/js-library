@@ -98,6 +98,17 @@
               bookList.splice(bookIndex, 1, book);
               OdinLibrary.render(bookList);
           });
+            $('#buttonSaveBook').click(function (e) {
+
+                const authorName = $('#inputBookAuthor').val()
+                const title = $('#inputBookTitle').val()
+                const numberOfPages = $('#inputBookNumberOfPages').val()
+                const readStatus = $('#inputBookReadStatus').val()
+
+                bookList = OdinLibrary.addBookToLibrary(authorName, title, numberOfPages, readStatus, bookList)
+
+            });
+
         });
     </script>
   </body>
