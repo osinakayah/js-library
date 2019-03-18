@@ -5,5 +5,5 @@ The books are stored in localstorage so they aren't lost when the page is reload
 
 ### Contributors
 
-Sanel Hozdic
+Sanel Hozdic <br>
 Ifeanyi Osinakayah Joseph
