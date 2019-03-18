@@ -68,6 +68,7 @@ OdinLibrary = (function () {
             }
             return []
         },
+        render,
         BOOK_STATUS: BOOK_STATUS,
         addBookToLibrary:  (author, title, numberOfPages, readStatus, localBookList) => {
             let isBookStausValid = false
@@ -105,7 +106,7 @@ OdinLibrary = (function () {
             localBookList.splice(bookIndex, 1);
             render(localBookList);
             return localBookList;
-        },        
+        },
     }
 
 

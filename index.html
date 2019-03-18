@@ -82,5 +82,15 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/index.js"></script>
+    <script>
+        $(document).ready(function () {
+            let bookList = OdinLibrary.loadCachedBooks();
+            $('body').on('click', '.deleteBook', function (e) {
+                e.stopImmediatePropagation();
+                const bookIndex = $(this).attr('data-book-index');
+                bookList = OdinLibrary.removeBookFromLibrary(bookList, bookIndex)
+            });
+        });
+    </script>
   </body>
 </html>
