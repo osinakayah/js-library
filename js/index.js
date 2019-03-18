@@ -39,6 +39,25 @@ OdinLibrary = (function () {
                 return 'table-danger'
         }
     }
+    
+    const render = (bookList) => {
+      writeToLocalStorage(bookList)
+      const tableBody = bookList.reduce(function (htmlBookRows, currentBook, currentBookIndex) {
+          return `
+              ${htmlBookRows}<tr class="${getBookRowContext(currentBook._readStatus)}">
+                  <td>${currentBookIndex + 1}</td>
+                  <td>${currentBook._author}</td>
+                  <td>${currentBook._title}</td>
+                  <td>${currentBook._numberOfPages} Pages</td>
+                  <td data-book-index="${currentBookIndex}" class="bookReadStatus">${getBookReadStatus(currentBook._readStatus)}</td>
+                  <td>
+                      <button data-book-index="${currentBookIndex}" class="btn btn-danger deleteBook">Delete</button>
+                  </td>
+              </tr>
+          `
+      }, '');
+      $('#book-list-body').html(tableBody);
+    };
 
     return {
         loadCachedBooks: () => {
@@ -51,5 +70,7 @@ OdinLibrary = (function () {
         },
         BOOK_STATUS: BOOK_STATUS
     }
+
+
 
 })()
