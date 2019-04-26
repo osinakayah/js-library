@@ -25,7 +25,7 @@ const OdinLibrary = (function () {
         case BOOK_STATUS.UNREAD:
             return 'Unread'
         default:
-            return 'j'
+            return 'Unread';
       }
     }
 
@@ -58,61 +58,63 @@ const OdinLibrary = (function () {
       }, '');
       $('#book-list-body').html(tableBody);
     };
+    const loadCachedBooks = () => {
+        const bookList = readFromLocalStorage();
+        if (bookList) {
+            render(bookList);
+            return bookList;
+        }
+        return []
+    };
+    const addBookToLibrary = (author, title, numberOfPages, readStatus, localBookList) => {
+        let isBookStausValid = false
+        for (let enumReadStatusKey in BOOK_STATUS) {
 
+            if (readStatus === BOOK_STATUS[enumReadStatusKey]) {
+                isBookStausValid = true;
+                break;
+            }
+        }
+        if (isBookStausValid) {
+            const book = new OdinLibrary.Book(author, title, numberOfPages, readStatus);
+            const newBookList = localBookList.concat(book);
+            render(newBookList);
+            return newBookList
+        }
+        alert('Invalid Paramter as book read status')
+        return localBookList;
+    };
+    const Book = function (author, title, numberOfPages, readStatus) {
+        this._author = author;
+        this._title = title;
+        this._numberOfPages = numberOfPages;
+        this._readStatus = readStatus;
+
+        this.toogleBookReadStatus = function () {
+            this._readStatus = parseInt(this._readStatus) + 1;
+            if (this._readStatus > 3) {
+                this._readStatus = 1
+            }
+        }
+    };
+    const removeBookFromLibrary = (bookList, bookIndex) => {
+        const localBookList = [...bookList];
+        localBookList.splice(bookIndex, 1);
+        render(localBookList);
+        return localBookList;
+    };
     return {
-        loadCachedBooks: () => {
-            const bookList = readFromLocalStorage();
-            if (bookList) {
-                render(bookList);
-                return bookList;
-            }
-            return []
-        },
+        loadCachedBooks,
         render,
-        BOOK_STATUS: BOOK_STATUS,
-        addBookToLibrary:  (author, title, numberOfPages, readStatus, localBookList) => {
-            let isBookStausValid = false
-            for (let enumReadStatusKey in BOOK_STATUS) {
-
-                if (readStatus === BOOK_STATUS[enumReadStatusKey]) {
-                    isBookStausValid = true;
-                    break;
-                }
-            }
-            console.log(isBookStausValid)
-            if (isBookStausValid) {
-                const book = new OdinLibrary.Book(author, title, numberOfPages, readStatus);
-                const newBookList = localBookList.concat(book);
-                render(newBookList);
-                return newBookList
-            }
-            alert('Invalid Paramter as book read status')
-            return localBookList;
-        },
-        Book: function (author, title, numberOfPages, readStatus) {
-            this._author = author;
-            this._title = title;
-            this._numberOfPages = numberOfPages;
-            this._readStatus = readStatus;
-
-            this.toogleBookReadStatus = function () {
-                this._readStatus = parseInt(this._readStatus) + 1;
-                if (this._readStatus > 3) {
-                    this._readStatus = 1
-                }
-            }
-        },
-        removeBookFromLibrary: (bookList, bookIndex) => {
-            const localBookList = [...bookList];
-            localBookList.splice(bookIndex, 1);
-            render(localBookList);
-            return localBookList;
-        },
+        BOOK_STATUS,
+        addBookToLibrary,
+        Book,
+        removeBookFromLibrary,
     }
 
 
 
-})()
+})();
 
 $(document).ready(function () {
     let bookList = OdinLibrary.loadCachedBooks();
