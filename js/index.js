@@ -1,10 +1,65 @@
 const OdinLibrary = (function () {
 
+    const createTableRow = (index, book) => {
+
+        if (document.getElementById(`book-id-${index}`)) {
+            //To prevent duplicates
+            return;
+        }
+        const bookRow = document.createElement('tr');
+        bookRow.setAttribute('id', `book-id-${index}`);
+        bookRow.className = getBookRowContext(book._readStatus);
+
+
+        const pageIndexData = document.createElement('td');
+        pageIndexData.innerText = index;
+        bookRow.appendChild(pageIndexData);
+
+
+        const authorData = document.createElement('td');
+        authorData.innerText = book._author;
+        bookRow.appendChild(authorData);
+
+        const titleData = document.createElement('td');
+        titleData.innerText = book._title;
+        bookRow.appendChild(titleData);
+
+        const numberOfPagesData = document.createElement('td');
+        numberOfPagesData.innerText = book._numberOfPages;
+        bookRow.appendChild(numberOfPagesData);
+
+        const bookReadStatus = document.createElement('td');
+        bookReadStatus.innerText = getBookReadStatus(book._readStatus);
+        bookReadStatus.className = 'bookReadStatus';
+        bookRow.appendChild(bookReadStatus);
+
+        const deleteBookData = document.createElement('td');
+        const buttonElement = document.createElement('button');
+        buttonElement.className = "btn btn-danger deleteBook";
+        buttonElement.innerText = 'Delete';
+        buttonElement.setAttribute('data-book-index', index);
+        deleteBookData.appendChild(buttonElement);
+        bookRow.appendChild(deleteBookData);
+
+        document.getElementById('book-list-body').appendChild(bookRow);
+    }
+
+
     const BOOK_STATUS = Object.freeze({
         UNREAD: '1',
         READ: '2',
         READING: '3',
     });
+
+    const isBookStausValid = (readStatus) => {
+        for (let enumReadStatusKey in BOOK_STATUS) {
+
+            if (readStatus === BOOK_STATUS[enumReadStatusKey]) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     const LOCAL_STORAGE_BOOK_LIST_KEY = 'bookList';
 
@@ -41,41 +96,22 @@ const OdinLibrary = (function () {
     }
 
     const render = (bookList) => {
-      writeToLocalStorage(bookList)
-      const tableBody = bookList.reduce(function (htmlBookRows, currentBook, currentBookIndex) {
-          return `
-              ${htmlBookRows}<tr class="${getBookRowContext(currentBook._readStatus)}">
-                  <td>${currentBookIndex + 1}</td>
-                  <td>${currentBook._author}</td>
-                  <td>${currentBook._title}</td>
-                  <td>${currentBook._numberOfPages} Pages</td>
-                  <td data-book-index="${currentBookIndex}" class="bookReadStatus">${getBookReadStatus(currentBook._readStatus)}</td>
-                  <td>
-                      <button data-book-index="${currentBookIndex}" class="btn btn-danger deleteBook">Delete</button>
-                  </td>
-              </tr>
-          `
-      }, '');
-      $('#book-list-body').html(tableBody);
+      writeToLocalStorage(bookList);
+      bookList.forEach((book, index) => {
+          createTableRow(index, book);
+      });
+
     };
     const loadCachedBooks = () => {
         const bookList = readFromLocalStorage();
         if (bookList) {
-            render(bookList);
             return bookList;
         }
         return []
     };
     const addBookToLibrary = (author, title, numberOfPages, readStatus, localBookList) => {
-        let isBookStausValid = false
-        for (let enumReadStatusKey in BOOK_STATUS) {
 
-            if (readStatus === BOOK_STATUS[enumReadStatusKey]) {
-                isBookStausValid = true;
-                break;
-            }
-        }
-        if (isBookStausValid) {
+        if (isBookStausValid(readStatus)) {
             const book = new OdinLibrary.Book(author, title, numberOfPages, readStatus);
             const newBookList = localBookList.concat(book);
             render(newBookList);
@@ -99,8 +135,11 @@ const OdinLibrary = (function () {
     };
     const removeBookFromLibrary = (bookList, bookIndex) => {
         const localBookList = [...bookList];
+        console.log(localBookList, bookIndex);
         localBookList.splice(bookIndex, 1);
-        render(localBookList);
+        writeToLocalStorage(localBookList);
+
+        document.getElementById(`book-id-${bookIndex}`).remove();
         return localBookList;
     };
     return {
@@ -118,10 +157,12 @@ const OdinLibrary = (function () {
 
 $(document).ready(function () {
     let bookList = OdinLibrary.loadCachedBooks();
+    OdinLibrary.render(bookList);
+
     $('body').on('click', '.deleteBook', function (e) {
         e.stopImmediatePropagation();
         const bookIndex = $(this).attr('data-book-index');
-        bookList = OdinLibrary.removeBookFromLibrary(bookList, bookIndex)
+        bookList = OdinLibrary.removeBookFromLibrary(OdinLibrary.loadCachedBooks(), bookIndex)
     });
     $('body').on('click', '.bookReadStatus', function (e) {
         e.stopImmediatePropagation();
@@ -129,16 +170,14 @@ $(document).ready(function () {
         const book = bookList[bookIndex];
         book.toogleBookReadStatus();
         bookList.splice(bookIndex, 1, book);
-        OdinLibrary.render(bookList);
+        // OdinLibrary.render(bookList);
     });
     $('#buttonSaveBook').click(function (e) {
-
-        const authorName = $('#inputBookAuthor').val()
-        const title = $('#inputBookTitle').val()
-        const numberOfPages = $('#inputBookNumberOfPages').val()
-        const readStatus = $('#inputBookReadStatus').val()
-
-        bookList = OdinLibrary.addBookToLibrary(authorName, title, numberOfPages, readStatus, bookList)
+        const authorName = $('#inputBookAuthor').val();
+        const title = $('#inputBookTitle').val();
+        const numberOfPages = $('#inputBookNumberOfPages').val();
+        const readStatus = $('#inputBookReadStatus').val();
+        // bookList = OdinLibrary.addBookToLibrary(authorName, title, numberOfPages, readStatus, bookList)
 
     });
 
