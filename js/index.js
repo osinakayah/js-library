@@ -29,6 +29,7 @@ const OdinLibrary = (function () {
         bookRow.appendChild(numberOfPagesData);
 
         const bookReadStatus = document.createElement('td');
+        bookReadStatus.setAttribute('data-book-index', index);
         bookReadStatus.innerText = getBookReadStatus(book._readStatus);
         bookReadStatus.className = 'bookReadStatus';
         bookRow.appendChild(bookReadStatus);
@@ -125,23 +126,29 @@ const OdinLibrary = (function () {
         this._title = title;
         this._numberOfPages = numberOfPages;
         this._readStatus = readStatus;
-
-        this.toogleBookReadStatus = function () {
-            this._readStatus = parseInt(this._readStatus) + 1;
-            if (this._readStatus > 3) {
-                this._readStatus = 1
-            }
-        }
     };
     const removeBookFromLibrary = (bookList, bookIndex) => {
         const localBookList = [...bookList];
-        console.log(localBookList, bookIndex);
+
         localBookList.splice(bookIndex, 1);
         writeToLocalStorage(localBookList);
 
         document.getElementById(`book-id-${bookIndex}`).remove();
         return localBookList;
     };
+    const updateDataRow = (index, book) => {
+        document.querySelector(`#book-id-${index} td.bookReadStatus`).innerText = getBookReadStatus(book._readStatus)
+        const element = document.getElementById(`book-id-${index}`);
+        element.className = getBookRowContext(book._readStatus);
+    }
+    const toogleBookReadStatus = (book) => {
+        book._readStatus = parseInt(book._readStatus) + 1;
+        if (book._readStatus > 3) {
+            book._readStatus = 1
+        }
+
+        return book;
+    }
     return {
         loadCachedBooks,
         render,
@@ -149,6 +156,8 @@ const OdinLibrary = (function () {
         addBookToLibrary,
         Book,
         removeBookFromLibrary,
+        toogleBookReadStatus,
+        updateDataRow
     }
 
 
@@ -156,29 +165,30 @@ const OdinLibrary = (function () {
 })();
 
 $(document).ready(function () {
-    let bookList = OdinLibrary.loadCachedBooks();
+    const bookList = OdinLibrary.loadCachedBooks();
     OdinLibrary.render(bookList);
 
     $('body').on('click', '.deleteBook', function (e) {
         e.stopImmediatePropagation();
         const bookIndex = $(this).attr('data-book-index');
-        bookList = OdinLibrary.removeBookFromLibrary(OdinLibrary.loadCachedBooks(), bookIndex)
+        OdinLibrary.removeBookFromLibrary(OdinLibrary.loadCachedBooks(), bookIndex)
     });
     $('body').on('click', '.bookReadStatus', function (e) {
         e.stopImmediatePropagation();
         const bookIndex = $(this).attr('data-book-index');
-        const book = bookList[bookIndex];
-        book.toogleBookReadStatus();
+        const bookList = OdinLibrary.loadCachedBooks();
+        const book = OdinLibrary.toogleBookReadStatus(bookList[bookIndex]);
+        OdinLibrary.updateDataRow(bookIndex, book);
         bookList.splice(bookIndex, 1, book);
-        // OdinLibrary.render(bookList);
+        OdinLibrary.render(bookList);
     });
     $('#buttonSaveBook').click(function (e) {
         const authorName = $('#inputBookAuthor').val();
         const title = $('#inputBookTitle').val();
         const numberOfPages = $('#inputBookNumberOfPages').val();
         const readStatus = $('#inputBookReadStatus').val();
-        // bookList = OdinLibrary.addBookToLibrary(authorName, title, numberOfPages, readStatus, bookList)
-
+        OdinLibrary.addBookToLibrary(authorName, title, numberOfPages, readStatus, OdinLibrary.loadCachedBooks())
+        $('#addBookModal').modal('toggle');
     });
 
 });
