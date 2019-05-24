@@ -132,8 +132,8 @@ const OdinLibrary = (function () {
 
         localBookList.splice(bookIndex, 1);
         writeToLocalStorage(localBookList);
-
-        document.getElementById(`book-id-${bookIndex}`).remove();
+        document.getElementById('book-list-body').innerHTML = '';
+        render(localBookList);
         return localBookList;
     };
     const updateDataRow = (index, book) => {
@@ -180,6 +180,7 @@ $(document).ready(function () {
         const book = OdinLibrary.toogleBookReadStatus(bookList[bookIndex]);
         OdinLibrary.updateDataRow(bookIndex, book);
         bookList.splice(bookIndex, 1, book);
+        document.getElementById('book-list-body').innerHTML = '';
         OdinLibrary.render(bookList);
     });
     $('#buttonSaveBook').click(function (e) {
