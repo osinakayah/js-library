@@ -97,6 +97,7 @@ const OdinLibrary = (function () {
     }
 
     const render = (bookList) => {
+      document.getElementById('book-list-body').innerHTML = '';
       writeToLocalStorage(bookList);
       bookList.forEach((book, index) => {
           createTableRow(index, book);
@@ -132,7 +133,7 @@ const OdinLibrary = (function () {
 
         localBookList.splice(bookIndex, 1);
         writeToLocalStorage(localBookList);
-        document.getElementById('book-list-body').innerHTML = '';
+
         render(localBookList);
         return localBookList;
     };
